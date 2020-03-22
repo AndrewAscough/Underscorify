@@ -1,4 +1,4 @@
-input file name: This
+This
 here
 is
 a

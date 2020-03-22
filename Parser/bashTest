@@ -1,0 +1,15 @@
+#!/bin/bash
+#simple bash script that tests test1, and test2 then tests both files in the same command line
+#Eventually i *might* make it test all possible subsets of each testnumber
+#and able to work out for itself how many test files are present in the current directory
+
+count=1
+filenames="bashout"
+test="test"
+
+for count in 1 2
+do
+	./Underscorify $test$count".txt" > $filenames$count".txt"
+done
+
+./Underscorify test1.txt test2.txt > $filenames"3.txt"
