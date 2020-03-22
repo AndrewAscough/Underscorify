@@ -3,9 +3,15 @@
 #include <sstream>
 #include <fstream>
 
-//So now currently this program takes in multiple files to be underscorified in the command line
-//and outputs using stdout
-//I think next before I go further I would like to create a bash file to assist in testing this.
+//Bash file was made and now its time for the next goal of taking in an *actual* :O C++ file. I figure a large problem Ill run into is when you have code that has a line like
+//"while(this==3){"
+//Which would be a problem because rn my program will bump into that and lump the whole thing as one word, which I dont want.
+//I figure I have a few options and one is to put spaces inbetween each symbol but that may not work too because that line would then be
+//while ( this = = 3 ) {
+//which isnt going to work because i need to treat the == as a word of itself.
+//I think for now for the sake of ""simplicity"" Ill allow myself to go through each word in a for loop and check if it contains ANY symbols and to just count how many symbolwords there are.
+//So a test where my example occurs and that being the only one the program would output the whole file like normal here and that there were 1 (or more) symbolword(s)
+
 int main(int argc, char *argv[])
 {
 	//Check if there is no filename being given
