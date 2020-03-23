@@ -12,6 +12,33 @@
 //I think for now for the sake of ""simplicity"" Ill allow myself to go through each word in a for loop and check if it contains ANY symbols and to just count how many symbolwords there are.
 //So a test where my example occurs and that being the only one the program would output the whole file like normal here and that there were 1 (or more) symbolword(s)
 
+//checks if the string s contains a special character defined by anything that isnt an underscore OR alphanumeric
+bool isSymbolWord(std::string s)
+{
+	bool symbol=false;
+	bool alphanumeric=false;
+
+	for(int i=0;i<s.length();i++)
+	{
+		if( (s[i]>=48 && s[i] <=57) ||
+			(s[i]>=65 && s[i] <=90) ||
+			(s[i]>=97 && s[i]<=122))
+			{
+				symbol=true;
+			}
+		else
+		{
+			alphanumeric=true;
+		}
+	}
+	if(symbol && alphanumeric)
+	{
+		std::cout<<"word: " << s << std::endl;
+		return true;
+	}
+	return false;
+}
+
 int main(int argc, char *argv[])
 {
 	//Check if there is no filename being given
@@ -29,11 +56,17 @@ int main(int argc, char *argv[])
 
 		std::string word;
 
+		int symbolWords=0;
+
 		while(inputFile >> word)
 		{
 			std::cout<<word<<std::endl;
+			if(isSymbolWord(word))
+			{
+				symbolWords++;
+			}
 		}
-		
+		std::cout<<"number of symbolwords was: " << symbolWords << std::endl;
 		inputFile.close();
 	}
 	

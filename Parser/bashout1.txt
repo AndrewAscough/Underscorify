@@ -4,6 +4,7 @@ is
 a
 test
 file.
+word: file.
 There
 are
 multiple
@@ -24,3 +25,4 @@ number
 9218
 92139
 832189398
+number of symbolwords was: 1

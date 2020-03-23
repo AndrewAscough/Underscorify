@@ -7,9 +7,11 @@ count=1
 filenames="bashout"
 test="test"
 
-for count in 1 2
+for count in 1 2 3
 do
 	./Underscorify $test$count".txt" > $filenames$count".txt"
 done
 
-./Underscorify test1.txt test2.txt > $filenames"3.txt"
+let count++
+
+./Underscorify test1.txt test2.txt > $filenames$count".txt"
