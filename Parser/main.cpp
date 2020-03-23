@@ -3,24 +3,28 @@
 #include <sstream>
 #include <fstream>
 
-//Bash file was made and now its time for the next goal of taking in an *actual* :O C++ file. I figure a large problem Ill run into is when you have code that has a line like
-//"while(this==3){"
-//Which would be a problem because rn my program will bump into that and lump the whole thing as one word, which I dont want.
-//I figure I have a few options and one is to put spaces inbetween each symbol but that may not work too because that line would then be
-//while ( this = = 3 ) {
-//which isnt going to work because i need to treat the == as a word of itself.
-//I think for now for the sake of ""simplicity"" Ill allow myself to go through each word in a for loop and check if it contains ANY symbols and to just count how many symbolwords there are.
-//So a test where my example occurs and that being the only one the program would output the whole file like normal here and that there were 1 (or more) symbolword(s)
+/*
+NEXT GOALS
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Okay next goal will be a little more challenging. Im debating right now if its better to "preprocess" the file, ie go through it and generate a new file with spaces
+inbetween each word to ensure there's no symbol words remaining and then by using that file for the underscorifying
+ORRRRR trying to "fix" (by add spaces to symbol words) the file as I go.
+I like to follow the K.I.S.S. principle of keep it simple and i can see trying to do it as i go (at least at first ill probably come back to it) to be too complex for me.
 
-//checks if the string s contains a special character defined by anything that isnt an underscore OR alphanumeric
+So next commit I want my program to generate a new file, with each word separated by a space all on one line (because lets be real we're trying to make this unreadable anyway
+so formatting can take a back seat until later iterations of this program.) and for there to be no remaining symbol words.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+//checks if the string s contains a special character (defined by anything that isnt an underscore OR alphanumeric) AND an alphanumeric character
 bool isSymbolWord(std::string s)
 {
-	bool symbol=false;
+	bool symbol=false ;
 	bool alphanumeric=false;
 
 	for(int i=0;i<s.length();i++)
 	{
-		if( (s[i]>=48 && s[i] <=57) ||
+		if( (s[i]>=48 && s[i]<=57 ) ||
 			(s[i]>=65 && s[i] <=90) ||
 			(s[i]>=97 && s[i]<=122))
 			{
@@ -48,7 +52,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	//Opens each file and outputs the words on a new line
+	//Opens each file
 	for(int i=1;i<argc;i++)
 	{
 		std::ifstream inputFile;
@@ -56,8 +60,7 @@ int main(int argc, char *argv[])
 
 		std::string word;
 
-		int symbolWords=0;
-
+		//Prints each word of the file on a new line
 		while(inputFile >> word)
 		{
 			std::cout<<word<<std::endl;
