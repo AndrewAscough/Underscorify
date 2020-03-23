@@ -28,19 +28,60 @@ bool isSymbolWord(std::string s)
 			(s[i]>=65 && s[i] <=90) ||
 			(s[i]>=97 && s[i]<=122))
 			{
-				symbol=true;
+				alphanumeric=true;
 			}
 		else
 		{
-			alphanumeric=true;
+			symbol=true;
 		}
 	}
 	if(symbol && alphanumeric)
 	{
-		std::cout<<"word: " << s << std::endl;
 		return true;
 	}
 	return false;
+}
+
+//if the character is a symbol the function returns true.
+bool isSymbol(char c)
+{
+
+	if( (c>=48 && c<=57 ) ||
+		(c>=65 && c<=90) ||
+		(c>=97 && c<=122))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	
+	return false;
+}
+
+//Takes in a symbolword string and returns a nonsymbolword
+std::string spaceifySymbolWord(std::string symbolWord)
+{
+	std::string result;
+
+	//i want the input to go from something like 0; to 0 ;
+	//or something like int i=0; to go to int i = 0 ;
+	for(int i=0;i<symbolWord.length();i++)
+	{
+		//So the encountered part of the string is in fact a symbol.
+		if(isSymbol(symbolWord[i]))
+		{
+			result+=" ";
+			result+=symbolWord[i];
+			result+=" ";
+		}
+		else
+		{
+			result+=symbolWord[i];
+		}
+	}
+	return result;
 }
 
 int main(int argc, char *argv[])
@@ -63,13 +104,17 @@ int main(int argc, char *argv[])
 		//Prints each word of the file on a new line
 		while(inputFile >> word)
 		{
-			std::cout<<word<<std::endl;
+			//If the encountered word is a symbol word, we need to break it down
 			if(isSymbolWord(word))
 			{
-				symbolWords++;
+				std::cout<<spaceifySymbolWord(word)<<std::endl;
+			}
+			//Word is not a symbol word, it can remain unchanged.
+			else
+			{
+				std::cout<<word<<std::endl;
 			}
 		}
-		std::cout<<"number of symbolwords was: " << symbolWords << std::endl;
 		inputFile.close();
 	}
 	

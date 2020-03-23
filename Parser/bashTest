@@ -7,7 +7,7 @@ count=1
 filenames="bashout"
 test="test"
 
-for count in 1 2 3
+for count in 1 2 3 4
 do
 	./Underscorify $test$count".txt" > $filenames$count".txt"
 done
