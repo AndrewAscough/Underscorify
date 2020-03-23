@@ -63,10 +63,13 @@ bool isSymbol(char c)
 //Takes in a symbolword string and returns a nonsymbolword
 std::string spaceifySymbolWord(std::string symbolWord)
 {
+	//Symbolword is a preprocessor directive for the compiler. I cant really mess with these
+
 	std::string result;
 
 	//i want the input to go from something like 0; to 0 ;
 	//or something like int i=0; to go to int i = 0 ;
+	//currently some of the problems im going to be running into is
 	for(int i=0;i<symbolWord.length();i++)
 	{
 		//So the encountered part of the string is in fact a symbol.
@@ -104,8 +107,15 @@ int main(int argc, char *argv[])
 		//Prints each word of the file on a new line
 		while(inputFile >> word)
 		{
-			//If the encountered word is a symbol word, we need to break it down
-			if(isSymbolWord(word))
+			//Preprocessor directive thingy, essentially not something I want to mess with.
+			if(word[0] == '#')
+			{
+				std::cout<<word<<" ";
+				inputFile>>word;
+				std::cout<<word<<std::endl;
+			}
+			//Breaks down symbolwords
+			else if(isSymbolWord(word))
 			{
 				std::cout<<spaceifySymbolWord(word)<<std::endl;
 			}
