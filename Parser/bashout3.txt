@@ -5,7 +5,7 @@ std ;
 int
 main (  ) 
 {
-cout <  <  " hello
+cout <<  " hello
 world " 
 <<
 endl ; 

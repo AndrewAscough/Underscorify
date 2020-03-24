@@ -60,30 +60,61 @@ bool isSymbol(char c)
 	return false;
 }
 
+//Checks if a character is an opperator which are: =, <, >, +, -, /, *, ^, !, %, :, |
+bool isOperand(char c)
+{
+	if(	c == '=' ||
+		c == '<' ||
+		c == '>' ||
+		c == '+' ||
+		c == '-' ||
+		c == '/' ||
+		c == '*' ||
+		c == '^' ||
+		c == '!' ||
+		c == '%' ||
+		c == ':' ||
+		c == '|')
+	{
+		return true;
+	}
+	return false;
+}
+
 //Takes in a symbolword string and returns a nonsymbolword
 std::string spaceifySymbolWord(std::string symbolWord)
 {
-	//Symbolword is a preprocessor directive for the compiler. I cant really mess with these
-
 	std::string result;
 
-	//i want the input to go from something like 0; to 0 ;
-	//or something like int i=0; to go to int i = 0 ;
-	//currently some of the problems im going to be running into is
 	for(int i=0;i<symbolWord.length();i++)
 	{
 		//So the encountered part of the string is in fact a symbol.
 		if(isSymbol(symbolWord[i]))
 		{
-			result+=" ";
-			result+=symbolWord[i];
-			result+=" ";
+			//Checks if we have two operands in a row (think << or <= or =<) and then keeps them together adding a space around it.
+			if(isOperand(symbolWord[i]) && isOperand(symbolWord[i]))
+			{
+				result+=" ";
+				result+=symbolWord[i];
+				result+=symbolWord[i+1];
+				result+=" ";
+				i++;
+			}
+			//Section is not an operand but still a symbol so it splits it.
+			else
+			{
+				result+=" ";
+				result+=symbolWord[i];
+				result+=" ";
+			}
 		}
+		//Encountered part of string is just a normal alphanumeric char so do nothing.
 		else
 		{
 			result+=symbolWord[i];
 		}
 	}
+
 	return result;
 }
 
@@ -107,7 +138,7 @@ int main(int argc, char *argv[])
 		//Prints each word of the file on a new line
 		while(inputFile >> word)
 		{
-			//Preprocessor directive thingy, essentially not something I want to mess with.
+			//Preprocessor directive thingy, essentially not something I want to mess with. Think #include <iostream>
 			if(word[0] == '#')
 			{
 				std::cout<<word<<" ";
