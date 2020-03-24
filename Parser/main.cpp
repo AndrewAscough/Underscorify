@@ -81,26 +81,65 @@ bool isOperand(char c)
 	return false;
 }
 
+bool isStringChar(std::string s)
+{
+	for(int i=0;i<s.length();i++)
+	{
+		if(s[i]==34 || s[i] ==44)
+		{
+			return true;
+		}
+	}
+}
+
 //Takes in a symbolword string and returns a nonsymbolword
 std::string spaceifySymbolWord(std::string symbolWord)
 {
 	std::string result;
+	//std::cerr<<std::endl<<"SPACEIFY CALLED WITH WORD = " << symbolWord << std::endl;
+	//When this var%2 == 0, the symbol word is not currently in a string mode
+	int isString = 0;
 
 	for(int i=0;i<symbolWord.length();i++)
 	{
 		//So the encountered part of the string is in fact a symbol.
 		if(isSymbol(symbolWord[i]))
 		{
-			//Checks if we have two operands in a row (think << or <= or =<) and then keeps them together adding a space around it.
-			if(isOperand(symbolWord[i]) && isOperand(symbolWord[i]))
+			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%' currently within one
+			if(symbolWord[i] == 34 || symbolWord[i] == 44)
 			{
+				//Entering the string
+				if(isString%2==0)
+				{
+					//std::cerr<<std::endl <<"ENTERING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;
+					result+=" ";
+					result+=symbolWord[i];
+				}
+				//Exiting the string
+				else
+				{
+					//std::cerr<<std::endl <<"EXITING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;					
+					result+=symbolWord[i];
+					result+=" ";
+				}
+				isString++;
+			}
+			//Section is not a string but IS an operand so it lumps the two symbols together and moves on
+			else if((isOperand(symbolWord[i]) && isOperand(symbolWord[i+1])) && isString%2 == 0)
+			{
+				//std::cerr<<std::endl<<"OPERAND FOUND AT " << i << " IT WAS: " << symbolWord[i] << symbolWord[i+1] << std::endl;
 				result+=" ";
 				result+=symbolWord[i];
 				result+=symbolWord[i+1];
 				result+=" ";
 				i++;
 			}
-			//Section is not an operand but still a symbol so it splits it.
+			//Section is not an operand, but it is in a string so it does nothing.
+			else if(isString%2 == 1)
+			{
+				result+=symbolWord[i];
+			}
+			//Section is not an operand, nor is it in a string so it splits the symbol away.
 			else
 			{
 				result+=" ";
@@ -145,15 +184,16 @@ int main(int argc, char *argv[])
 				inputFile>>word;
 				std::cout<<word<<std::endl;
 			}
-			//Breaks down symbolwords
+			//This is a case where the word contains something like: cout<<"hello world!" where id want the output of it to be cout << "hello world" (ie the string needs to 
+			//be unchanged) Or if the input was something like char c='s'; Id want the output to be: char c = 's' ;
 			else if(isSymbolWord(word))
 			{
-				std::cout<<spaceifySymbolWord(word)<<std::endl;
+				std::cout<<spaceifySymbolWord(word)<<" ";
 			}
 			//Word is not a symbol word, it can remain unchanged.
 			else
 			{
-				std::cout<<word<<std::endl;
+				std::cout<<word<<" ";
 			}
 		}
 		inputFile.close();
