@@ -16,26 +16,28 @@ so formatting can take a back seat until later iterations of this program.) and 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 */
 
+//Determines if input is currently interacting with a string or not
+int isString = 0;
+
 //checks if the string s contains a special character (defined by anything that isnt an underscore OR alphanumeric) AND an alphanumeric character
 bool isSymbolWord(std::string s)
 {
 	bool symbol=false ;
-	bool alphanumeric=false;
 
 	for(int i=0;i<s.length();i++)
 	{
 		if( (s[i]>=48 && s[i]<=57 ) ||
 			(s[i]>=65 && s[i] <=90) ||
 			(s[i]>=97 && s[i]<=122))
-			{
-				alphanumeric=true;
-			}
+		{
+			continue;
+		}
 		else
 		{
 			symbol=true;
 		}
 	}
-	if(symbol && alphanumeric)
+	if(symbol)
 	{
 		return true;
 	}
@@ -81,24 +83,24 @@ bool isOperand(char c)
 	return false;
 }
 
-bool isStringChar(std::string s)
+//searches the string if it has a ';' character it'll want to add a newline after it.
+bool newLineNeeded(std::string s)
 {
 	for(int i=0;i<s.length();i++)
 	{
-		if(s[i]==34 || s[i] ==44)
+		if(s[i] == ';')
 		{
 			return true;
 		}
 	}
+	return false;
 }
 
-//Takes in a symbolword string and returns a nonsymbolword
+//Takes in a symbolword string and returns a nonsymbolword by separating the symbols with spaces. Also handles string opening and closings without modifying the string by checking isString.
 std::string spaceifySymbolWord(std::string symbolWord)
 {
 	std::string result;
-	//std::cerr<<std::endl<<"SPACEIFY CALLED WITH WORD = " << symbolWord << std::endl;
-	//When this var%2 == 0, the symbol word is not currently in a string mode
-	int isString = 0;
+	std::cerr<<std::endl<<"SPACEIFY CALLED WITH WORD = " << symbolWord << std::endl;
 
 	for(int i=0;i<symbolWord.length();i++)
 	{
@@ -106,28 +108,28 @@ std::string spaceifySymbolWord(std::string symbolWord)
 		if(isSymbol(symbolWord[i]))
 		{
 			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%' currently within one
-			if(symbolWord[i] == 34 || symbolWord[i] == 44)
+			if(symbolWord[i] == 34 || symbolWord[i] == 39)
 			{
 				//Entering the string
 				if(isString%2==0)
 				{
-					//std::cerr<<std::endl <<"ENTERING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;
-					result+=" ";
+					std::cerr<<std::endl <<"ENTERING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;
+					//result+=" ";
 					result+=symbolWord[i];
 				}
 				//Exiting the string
 				else
 				{
-					//std::cerr<<std::endl <<"EXITING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;					
+					std::cerr<<std::endl <<"EXITING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;					
 					result+=symbolWord[i];
-					result+=" ";
+					//result+=" ";
 				}
 				isString++;
 			}
 			//Section is not a string but IS an operand so it lumps the two symbols together and moves on
 			else if((isOperand(symbolWord[i]) && isOperand(symbolWord[i+1])) && isString%2 == 0)
 			{
-				//std::cerr<<std::endl<<"OPERAND FOUND AT " << i << " IT WAS: " << symbolWord[i] << symbolWord[i+1] << std::endl;
+				std::cerr<<std::endl<<"OPERAND FOUND AT " << i << " IT WAS: " << symbolWord[i] << symbolWord[i+1] << std::endl;
 				result+=" ";
 				result+=symbolWord[i];
 				result+=symbolWord[i+1];
@@ -153,7 +155,7 @@ std::string spaceifySymbolWord(std::string symbolWord)
 			result+=symbolWord[i];
 		}
 	}
-
+	std::cerr<<"SPACEIFY RETURNED " << result <<std::endl;
 	return result;
 }
 
@@ -169,6 +171,7 @@ int main(int argc, char *argv[])
 	//Opens each file
 	for(int i=1;i<argc;i++)
 	{
+		std::cerr<<"(int)'\"' = " << (int)'\"' << std::endl;
 		std::ifstream inputFile;
 		inputFile.open(argv[i]);
 
@@ -184,11 +187,15 @@ int main(int argc, char *argv[])
 				inputFile>>word;
 				std::cout<<word<<std::endl;
 			}
-			//This is a case where the word contains something like: cout<<"hello world!" where id want the output of it to be cout << "hello world" (ie the string needs to 
-			//be unchanged) Or if the input was something like char c='s'; Id want the output to be: char c = 's' ;
+			//for some resemblance of "formatting"
+			else if(newLineNeeded(word))
+			{
+				std::cout<<spaceifySymbolWord(word)<<std::endl;
+			}
+			//Handles breaking up symbol words and passing through strings without changing the interior.
 			else if(isSymbolWord(word))
 			{
-				std::cout<<spaceifySymbolWord(word)<<" ";
+				std::cout<<spaceifySymbolWord(word)<<" ";		
 			}
 			//Word is not a symbol word, it can remain unchanged.
 			else
