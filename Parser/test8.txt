@@ -3,18 +3,6 @@
 #include <sstream>
 #include <fstream>
 
-/*
-NEXT GOALS
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-This is really starting to come together this part of the project. I think the next step I should spend helping the program to be able to handle comments. Now I believe
-this will be another large challenge because unlike strings you can have comments that have no clear end really if you dont have the WHOLE line of input. So I think I will
-need to change the way i go through the file by using "getline" instead of just going word by word. After that Ill need to be able to detect when we are exiting or entering
-a comment block such as this one with the slash start OR the comment thats just two slashes.
-
-Bugs to fix:
-	- Large amounts of excess whitespace are being added. Though tbh with the goal of this program being to make it unreadable i dont necessarily see this as bad
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-*/
 
 //Determines if input is currently interacting with a string or not
 int isString = 0;
@@ -97,31 +85,10 @@ bool newLineNeeded(std::string s)
 	return false;
 }
 
-//Extracts basic comments from a string s that begin with "//"
-std::string extractComment(std::string s)
-{
-	std::string result;
-
-	for(int i=0;i<s.length();i++)
-	{
-		if(s[i] == '/' && s[i+1] == '/')
-		{
-			while(i<s.length())
-			{
-				result+=s[i];
-				i++;
-			}
-		}
-	}
-
-	return result;
-}
-
 //Takes in a symbolword string and returns a nonsymbolword by separating the symbols with spaces. Also handles string opening and closings without modifying the string by checking isString.
 std::string spaceifySymbolWord(std::string symbolWord)
 {
 	std::string result = " ";
-	//std::cerr<<std::endl<<"SPACEIFY CALLED WITH WORD = " << symbolWord << std::endl;
 
 	for(int i=0;i<symbolWord.length();i++)
 	{
@@ -134,13 +101,11 @@ std::string spaceifySymbolWord(std::string symbolWord)
 				//Entering the string
 				if(isString%2==0)
 				{
-					//std::cerr<<std::endl <<"ENTERING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;
 					result+=symbolWord[i];
 				}
 				//Exiting the string
 				else
 				{
-					//std::cerr<<std::endl <<"EXITING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;					
 					result+=symbolWord[i];
 				}
 				isString++;
@@ -148,7 +113,6 @@ std::string spaceifySymbolWord(std::string symbolWord)
 			//Section is not a string but IS an operand so it lumps the two symbols together and moves on
 			else if((isOperand(symbolWord[i]) && isOperand(symbolWord[i+1])) && isString%2 == 0)
 			{
-				//std::cerr<<std::endl<<"OPERAND FOUND AT " << i << " IT WAS: " << symbolWord[i] << symbolWord[i+1] << std::endl;
 				result+=" ";
 				result+=symbolWord[i];
 				result+=symbolWord[i+1];
@@ -174,12 +138,11 @@ std::string spaceifySymbolWord(std::string symbolWord)
 			result+=symbolWord[i];
 		}
 	}
-	//std::cerr<<"SPACEIFY RETURNED " << result <<std::endl;
 	result+=" ";
 	return result;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) //this will break it also there should be 8 spaces between this        this.
 {
 	//Check if there is no filename being given
 	if(argc < 2)
@@ -214,7 +177,6 @@ int main(int argc, char *argv[])
 				//Check if the REST of the line is a // comment
 				else if(word[0] == '/' && word[1] == '/')
 				{
-					std::cout<<extractComment(line)<<std::endl;
 					break;
 				}
 				//for some resemblance of "formatting"
