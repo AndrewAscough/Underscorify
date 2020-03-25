@@ -62,7 +62,7 @@ bool isSymbol(char c)
 	return false;
 }
 
-//Checks if a character is an opperator which are: =, <, >, +, -, /, *, ^, !, %, :, |
+//Checks if a character is an opperator which are: =, <, >, +, -, /, *, ^, !, %, :, |, &
 bool isOperand(char c)
 {
 	if(	c == '=' ||
@@ -76,7 +76,8 @@ bool isOperand(char c)
 		c == '!' ||
 		c == '%' ||
 		c == ':' ||
-		c == '|')
+		c == '|' ||
+		c == '&')
 	{
 		return true;
 	}
