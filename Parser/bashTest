@@ -5,13 +5,16 @@
 
 count=1
 filenames="bashout"
-test="test"
+dir="testout"
 
-for count in 1 2 3 4 5 6
+mkdir -p $dir
+
+for count in 1 2 3 4 5 6 7 8 9 10
 do
-	./Underscorify $test$count".txt" > $filenames$count".txt"
+	echo test/"test"$count".txt"
+	./Underscorify test/"test"$count".txt" > $dir/$filenames$count
 done
 
 let count++
 
-./Underscorify test1.txt test2.txt > $filenames$count".txt"
+./Underscorify test/test1.txt test/test2.txt > $dir/$filenames$count".txt"
