@@ -6,13 +6,8 @@
 /*
 NEXT GOALS
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IT ACTUALLY WORKS (mostly.. see bug list). For next goals i think for a little bit im done with modifying this file. Id like to organise this directory more so that the
-tests are in a separate file. Id also like my bash script to compile all the cpp files after this parser is run on them to see if they still work as intended. Furthering
-that, id like to parse this parser file, compile the output and see if it still works the exact same. Again it has to work THE EXACT same, so no strings can be modified
-or anything.
-
-Furthering that when I actually come back to modifying this I'd like to make it generate an output file where it takes in the file name and adds "out" before the .cpp or
-whatever. Then I'd actually like to change this to a header and class file.
+One last thing before i change this into a class file. I'd like to make it put the output into a new directory called "Parsed".
+Then I'd actually like to change this to a header and class file.
 
 Next stage after that is storing variable names and FINALLY UNDERSCORIFYING THEM YES.
 
