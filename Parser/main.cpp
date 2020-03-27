@@ -223,7 +223,8 @@ std::string extractBlockComment(std::string line)
 
 	for(int i=0;i<line.length();i++)
 	{
-		if(line[i] == 34 || line[i] == 39)
+		//String outside a comment block
+		if((line[i] == 34 || line[i] == 39) && isComment%2 ==0)
 		{
 			buffer+=line[i];
 			i++;

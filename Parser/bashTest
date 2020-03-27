@@ -12,9 +12,20 @@ mkdir -p $dir
 for count in 1 2 3 4 5 6 7 8 9 10
 do
 	echo test/"test"$count".txt"
-	./Underscorify test/"test"$count".txt" > $dir/$filenames$count
+	./Underscorify test/"test"$count".txt"
 done
 
-let count++
+./Underscorify main.cpp
+g++ -o Underscorifyout mainout.cpp
 
-./Underscorify test/test1.txt test/test2.txt > $dir/$filenames$count".txt"
+for count in 1 2 3 4 5 6 7 8 9 10
+do
+	echo test/out/"test"$count".txt"
+	./Underscorifyout test/out/"test"$count".txt"
+done
+
+for count in 1 2 3 4 5 6 7 8 9 10
+do
+	echo "diff between test/out/test"$count"out.txt and test/test"$count"out.txt"
+	diff "test/out/test"$count"out.txt" "test/test"$count"out.txt"
+done
