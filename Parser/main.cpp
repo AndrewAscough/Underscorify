@@ -139,7 +139,7 @@ bool newLineNeeded(std::string s)
 //Takes in a symbolword string and returns a nonsymbolword by separating the symbols with spaces. Also handles string opening and closings without modifying the string by checking isString.
 std::string spaceifySymbolWord(std::string symbolWord)
 {
-	std::string result = " ";
+	std::string result;
 	//std::cerr<<std::endl<<"SPACEIFY CALLED WITH WORD = " << symbolWord << std::endl;
 
 	for(int i=0;i<symbolWord.length();i++)
@@ -150,18 +150,7 @@ std::string spaceifySymbolWord(std::string symbolWord)
 			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%' currently within one
 			if(symbolWord[i] == 34 || symbolWord[i] == 39)
 			{
-				//Entering the string
-				if(isString%2==0)
-				{
-					//std::cerr<<std::endl <<"ENTERING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;
-					result+=symbolWord[i];
-				}
-				//Exiting the string
-				else
-				{
-					//std::cerr<<std::endl <<"EXITING THE STRING AT RESULT = " << result << " WITH CHARACTER ENCOUNTERED AT POSITION " << i << " isString = " << isString << " WORD = " << symbolWord <<std::endl;					
-					result+=symbolWord[i];
-				}
+				result+=symbolWord[i];
 				isString++;
 			}
 			//Section is not a string but IS an operand so it lumps the two symbols together and moves on
@@ -193,8 +182,8 @@ std::string spaceifySymbolWord(std::string symbolWord)
 			result+=symbolWord[i];
 		}
 	}
-	//std::cerr<<"SPACEIFY RETURNED " << result <<std::endl;
-	result+=" ";
+	//result+=" ";
+	//std::cerr<<"SPACEIFY RETURNED " << result <<" with length = " << result.length()<<std::endl;
 	return result;
 }
 
@@ -236,9 +225,10 @@ std::string extractBlockComment(std::string line)
 	{
 		if(line[i] == 34 || line[i] == 39)
 		{
+			buffer+=line[i];
+			i++;
 			result+=spaceifySymbolWord(buffer);
 			buffer = "";
-			isString++;
 		}
 		//Word block has encountered a comment beginning and up until now the buffer contains non commented words. The iscomment%2 is used here to ensure we dont have a line like /* foo/* bar*/
 		else if(	(line[i] == '/' && line[i+1] == '*') && isComment%2 == 0 && isString%2 == 0)
@@ -295,8 +285,14 @@ std::string extractBlockComment(std::string line)
 			result+=line[i];
 		}
 	}
-
-	result+=buffer;
+	if(isComment%2 == 1)
+	{
+		result+=buffer;
+	}
+	else
+	{
+		result+=spaceifySymbolWord(buffer);
+	}
 	return result;
 }
 
@@ -350,7 +346,6 @@ int main(int argc, char *argv[])
 			//Check if the word contains a block comment OR if it is currently still in one and that it isnt in astring. Also handles when there is both a line comment and block comment on the same line
 			else if((isBlockComment(line) || isComment%2 == 1) && isString%2 == 0)
 			{
-				std::cerr<<"isString was: " << isString << " line was: " << line << std::endl;
 				outputFile<<extractBlockComment(line)<<std::endl;
 			}
 			//Check if the REST of the line is a // comment
@@ -371,7 +366,7 @@ int main(int argc, char *argv[])
 					//Handles breaking up symbol words and passing through strings without changing the interior.
 					else if(isSymbolWord(word))
 					{
-						outputFile<<spaceifySymbolWord(word);		
+						outputFile<<spaceifySymbolWord(word)<<" ";		
 					}
 					//Word is not a symbol word, it can remain unchanged.
 					else
