@@ -1,0 +1,90 @@
+#include <iostream>
+#include <algorithm>    // std::next_permutation, std::sort
+
+using namespace std; 
+
+extern char contractReturn(int contractInt);
+
+int main () 
+{
+  	int arrContracts[5][5] =
+	{
+		{82, 73, 74, 63, 49},
+		{20, 65, 19, 78, 44},
+		{40, 45, 69, 58, 45},
+		{17, 55, 18, 93, 31},
+		{65, 30, 37, 78, 51}
+	};
+
+	//Initial permutation of the contract order
+  	int myints[5] = {0,1,2,3,4};
+
+  	//Set lowestSum to be large enough not to affect logic
+  	int lowesetSum = 1000;
+
+  	//Keeps track of best contract order
+  	int lowesetSumArr[5];
+
+  	do
+  	{	
+  		//Keeps track of current sum
+  		int newSum = arrContracts[0][myints[0]] 
+  					+ arrContracts[1][myints[1]] 
+  					+ arrContracts[2][myints[2]] 
+  					+ arrContracts[3][myints[3]]
+  					+ arrContracts[4][myints[4]];
+
+  		//If we find a smaller sum, replace lowestSum & the array
+  		if (lowesetSum > newSum)
+  		{
+  			lowesetSum = newSum;
+
+  			for (int i = 0; i < 5; ++i)
+  			{
+  				lowesetSumArr[i] = myints[i];
+  			}
+  		}
+  	
+  	//Iterates the next permutation until all are overed
+  	} while (next_permutation(myints, myints+5));
+
+  	cout << "lowesetSum = " << lowesetSum << endl;
+
+  	cout << "best path = ";
+
+  	cout << " A:" << contractReturn(lowesetSumArr[0]);
+  	cout << " B:" << contractReturn(lowesetSumArr[1]);
+  	cout << " C:" << contractReturn(lowesetSumArr[2]);
+  	cout << " D:" << contractReturn(lowesetSumArr[3]);
+  	cout << " E:" << contractReturn(lowesetSumArr[4]);
+
+  	cout << endl;
+
+  	return 0;
+}
+
+char contractReturn(int contractInt)
+{
+	switch (contractInt)
+	{
+		case 0:
+			return 'p';
+			break;
+
+		case 1:
+			return 'q';
+			break;
+
+		case 2:
+			return 'r';
+			break;
+
+		case 3:
+			return 's';
+			break;
+
+		case 4:
+			return 't';
+			break;
+	}	
+}

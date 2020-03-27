@@ -16,7 +16,7 @@ do
 done
 
 ./Underscorify main.cpp
-g++ -o Underscorifyout mainout.cpp
+g++ -o Underscorifyout mainP.cpp
 
 for count in 1 2 3 4 5 6 7 8 9 10
 do
@@ -26,6 +26,6 @@ done
 
 for count in 1 2 3 4 5 6 7 8 9 10
 do
-	echo "diff between test/out/test"$count"out.txt and test/test"$count"out.txt"
-	diff "test/out/test"$count"out.txt" "test/test"$count"out.txt"
+	echo "diff between test/out/test"$count"P.txt and test/test"$count"P.txt"
+	diff "test/out/test"$count"P.txt" "test/test"$count"P.txt"
 done
