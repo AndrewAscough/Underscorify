@@ -26,23 +26,23 @@ void Parsify::Parser::Parse()
 
 		std::string line;
 		
-		//Prints each word of the file on a new line
+		//Takes in lines of file and splits any symbolWords while leaving comments and strings unchanged.
 		while(std::getline(inputFile,line))
 		{
 			std::string word;
 			std::istringstream currentLine(line);
 
-			//Preprocessor directive thingy, essentially not something I want to mess with. Think #include <iostream> AND this isnt found in a comment
+			//Preprocessor directive thingy, essentially not something I want to mess with. Think #include <iostream>
 			if(line[0] == '#' && isComment%2 ==0)
 			{
 				outputFile<<line<<std::endl;
 			}
-			//Check if the word contains a block comment OR if it is currently still in one and that it isnt in astring. Also handles when there is both a line comment and block comment on the same line
+			//Check if the word contains a block comment OR if it is currently still in one and that it isnt in a string. Also handles when there is both a line comment and block comment on the same line
 			else if((isBlockComment(line) || isComment%2 == 1) && isString%2 == 0)
 			{
 				outputFile<<extractBlockComment(line)<<std::endl;
 			}
-			//Check if the REST of the line is a // comment
+			//Splits and spaceifys whatever comes before the //comment
 			else if(isLineComment(line))
 			{
 				outputFile<<extractLineComment(line)<<std::endl;
@@ -81,14 +81,13 @@ void Parsify::Parser::Parse()
 std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 {
 	std::string result;
-	//std::cerr<<std::endl<<"SPACEIFY CALLED WITH WORD = " << symbolWord << std::endl;
 
 	for(int i=0;i<symbolWord.length();i++)
 	{
-		//So the encountered part of the string is in fact a symbol.
+		//Encountered part of the string is a symbol.
 		if(isSymbol(symbolWord[i]))
 		{
-			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%' currently within one
+			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%'
 			if(symbolWord[i] == 34 || symbolWord[i] == 39)
 			{
 				result+=symbolWord[i];
@@ -97,7 +96,6 @@ std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 			//Section is not a string but IS an operand so it lumps the two symbols together and moves on
 			else if((isOperand(symbolWord[i]) && isOperand(symbolWord[i+1])) && isString%2 == 0)
 			{
-				//std::cerr<<std::endl<<"OPERAND FOUND AT " << i << " IT WAS: " << symbolWord[i] << symbolWord[i+1] << std::endl;
 				result+=" ";
 				result+=symbolWord[i];
 				result+=symbolWord[i+1];
@@ -123,8 +121,6 @@ std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 			result+=symbolWord[i];
 		}
 	}
-	//result+=" ";
-	//std::cerr<<"SPACEIFY RETURNED " << result <<" with length = " << result.length()<<std::endl;
 	return result;
 }
 
@@ -133,7 +129,6 @@ std::string Parsify::Parser::extractLineComment(std::string line)
 {
 	std::string result;
 	std::string remainderString;
-
 
 	for(int i=0;i<line.length();i++)
 	{
@@ -152,7 +147,6 @@ std::string Parsify::Parser::extractLineComment(std::string line)
 	}
 	//Readds the part of the string that wasnt a comment.
 	result.insert(0,spaceifySymbolWord(remainderString));
-
 	return result;
 }
 
@@ -164,7 +158,7 @@ std::string Parsify::Parser::extractBlockComment(std::string line)
 
 	for(int i=0;i<line.length();i++)
 	{
-		//String outside a comment block
+		//String is encountered before the comment block
 		if((line[i] == 34 || line[i] == 39) && isComment%2 ==0)
 		{
 			buffer+=line[i];
@@ -177,7 +171,6 @@ std::string Parsify::Parser::extractBlockComment(std::string line)
 		{
 			//Add current word to result after separating out the symbolwords
 			result+= spaceifySymbolWord(buffer);
-			//reset the buffer to prepare to accept commented strings
 			buffer ="";
 
 			//add the comment beginning of /* to result
@@ -194,6 +187,7 @@ std::string Parsify::Parser::extractBlockComment(std::string line)
 		{
 			//add buffer to result
 			result+= buffer;
+			buffer="";
 
 			//add the comment tail of */
 			result+=line[i];
@@ -203,9 +197,6 @@ std::string Parsify::Parser::extractBlockComment(std::string line)
 
 			//ensure theres a gap between this and the next string.
 			result+=" ";
-
-			//reset buffer
-			buffer="";
 
 			//increment isComment to signal we are no longer in a comment block
 			isComment++;
@@ -227,6 +218,7 @@ std::string Parsify::Parser::extractBlockComment(std::string line)
 			result+=line[i];
 		}
 	}
+	//If we're in a comment buffer will remain unmodified and added to result, else we spaceify it and add it to the result
 	if(isComment%2 == 1)
 	{
 		result+=buffer;
@@ -238,7 +230,7 @@ std::string Parsify::Parser::extractBlockComment(std::string line)
 	return result;
 }
 
-//checks if the string s contains a special character (defined by anything that isnt an underscore OR alphanumeric) AND an alphanumeric character
+//checks if the string s contains a special character (defined by anything that isnt an underscore OR alphanumeric)
 bool Parsify::isSymbolWord(std::string s)
 {
 	bool symbol=false ;
