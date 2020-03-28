@@ -16,7 +16,7 @@ do
 done
 
 ./Underscorify main.cpp
-g++ -o Underscorifyout mainP.cpp
+g++ -o Underscorifyout mainout.cpp
 
 for count in 1 2 3 4 5 6 7 8 9 10
 do
@@ -26,6 +26,40 @@ done
 
 for count in 1 2 3 4 5 6 7 8 9 10
 do
-	echo "diff between test/out/test"$count"P.txt and test/test"$count"P.txt"
-	diff "test/out/test"$count"P.txt" "test/test"$count"P.txt"
+	echo "diff between test/out/test"$count"out.txt and test/test"$count"out.txt"
+	diff "test/out/test"$count"out.txt" "test/test"$count"out.txt"
+done
+
+echo "testing original main.cpp file complete."
+
+g++ -o ClassUnderscorify Parser.h Parser.cpp test.cpp
+
+echo "generating testp's for new parser class"
+
+for count in 1 2 3 4 5 6 7 8 9 10
+do
+	echo test/"test"$count".txt"
+	./ClassUnderscorify test/"test"$count".txt"
+done
+
+echo "basic tests generated. Diff tests:"
+for count in 1 2 3 4 5 6 7 8 9 10
+do
+	echo "diff between test/test"$count"out.txt and test/test"$count"P.txt"
+	diff "test/test"$count"out.txt" "test/test"$count"P.txt"
+done
+
+./ClassUnderscorify Parser.h Parser.cpp test.cpp
+g++ -o ClassUnderscorifyP ParserP.h ParserP.cpp testP.cpp
+
+for count in 1 2 3 4 5 6 7 8 9 10
+do
+	echo test/out/"test"$count".txt"
+	./ClassUnderscorify test/out/"test"$count".txt"
+done
+
+for count in 1 2 3 4 5 6 7 8 9 10
+do
+	echo "diff between test/out/test"$count"out.txt and test/out/test"$count"P.txt"
+	diff "test/out/test"$count"out.txt" "test/out/test"$count"P.txt"
 done

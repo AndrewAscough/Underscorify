@@ -292,18 +292,18 @@ std::string extractBlockComment(std::string line)
 	return result;
 }
 
-//adds "P" before the . in a normal file (if there is a dot). If there isnt it will add it to the end of the filename
+//adds "out" before the . in a normal file (if there is a dot). If there isnt it will add it to the end of the filename
 std::string nameOutputFile(std::string s)
 {
 	for(int i=0;i<s.length();i++)
 	{
 		if(s[i] == '.')
 		{
-			s.insert(i,"P");
+			s.insert(i,"out");
 			return s;
 		}
 	}
-	s+="P";
+	s+="out";
 	return s;
 }
 
