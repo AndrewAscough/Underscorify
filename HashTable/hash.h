@@ -12,6 +12,7 @@ public:
 	void addEntry(std::string s);
 	bool searchItem(std::string s);
 	void print();
+	void printDist();
 
 private:
 	static const int tableSize=53;

@@ -18,21 +18,62 @@ void hashTable::print()
 {
 	for(int i=0;i<tableSize;i++)
 	{
-		std::cout<<"#"<<i<<" "<<HashTable[i]->word << " " << HashTable[i]->order;
+		std::cout<<"#"<<i<<" "<<HashTable[i]->word << " order: " << HashTable[i]->order;
 		
 		item *ptr=HashTable[i];
 
 		while(ptr->nextItem != NULL)
 		{
 			ptr = ptr->nextItem;
-			std::cout<<"|"<<ptr->word << " " << ptr->order;
+			std::cout<<"|"<<ptr->word << " order: " << ptr->order;
 		}
 		std::cout<<std::endl;
 	}
 }
 
-bool searchItem(std::string s)
+//prints the rough distribution of words throughout the buckets
+void hashTable::printDist()
 {
+	std::cout<<"number of uniques = " << inOrder << std::endl;
+
+	for(int i=0;i<tableSize;i++)
+	{
+		int c=1;
+		float percentContained;
+
+		std::cout<<"#"<<i<<" ";
+		item *ptr=HashTable[i];
+		while(ptr->nextItem != NULL)
+		{
+			ptr = ptr->nextItem;
+			c++;
+		}
+		percentContained = (c/inOrder) * 100;
+		std::cout << c << " which is " << (float)((float)c/(float)inOrder)*100 <<"%" << std::endl;
+	}
+}
+
+
+bool hashTable::searchItem(std::string s)
+{
+	int index = hashCode(s);
+	if(HashTable[index]->word == s)
+	{
+		std::cout<<"didnt add word: " << s <<std::endl;
+		return true;
+	}
+
+	item *ptr = HashTable[index];
+
+	while(ptr->nextItem != NULL)
+	{
+		ptr = ptr->nextItem;
+		if(ptr->word == s)
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -40,12 +81,11 @@ bool searchItem(std::string s)
 void hashTable::addEntry(std::string s)
 {
 	//If string is already in hash table we dont need to readd it
-	/*
-	if(searchTable(s))
+	if(searchItem(s))
 	{
 		return;
-	}*/
-
+	}
+	std::cout<<"added word: " << s << std::endl;
 	int index = hashCode(s);
 	inOrder++;
 
@@ -81,7 +121,7 @@ int hashTable::hashCode(std::string key)
 
 	for(int i=0;i<key.length();i++)
 	{
-		hash += key[i];
+		hash += (int)key[i]*31;
 	}
 
 	index = hash % tableSize;
