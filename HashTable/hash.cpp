@@ -1,6 +1,6 @@
 #include "hash.h"
 
-hashTable::hashTable()
+Hashify::hashTable::hashTable()
 {
 	inOrder = 0;
 
@@ -14,7 +14,7 @@ hashTable::hashTable()
 }
 
 //Prints hashtable
-void hashTable::print()
+void Hashify::hashTable::print()
 {
 	for(int i=0;i<tableSize;i++)
 	{
@@ -32,7 +32,7 @@ void hashTable::print()
 }
 
 //prints the rough distribution of words throughout the buckets
-void hashTable::printDist()
+void Hashify::hashTable::printDist()
 {
 	std::cout<<"number of uniques = " << inOrder << std::endl;
 
@@ -53,13 +53,51 @@ void hashTable::printDist()
 	}
 }
 
+//Pops an item off the hashtable beginning from hashtable[0]-->end tail and finishes popping each tail item until it moves on to hashtable[1]
+Hashify::item Hashify::hashTable::popEntry()
+{
+	//Generates blank return val
+	item returnVal;
+	returnVal.word="";
+	returnVal.order=-1;
+	returnVal.nextItem = NULL;
 
-bool hashTable::searchItem(std::string s)
+	for(int i=0;i<tableSize;i++)
+	{
+		//valid entry has been found
+		if(HashTable[i]->word != "")
+		{
+			//Entry has no tail
+			if(HashTable[i]->nextItem == NULL)
+			{
+				returnVal.word = HashTable[i]->word;
+				returnVal.order = HashTable[i]->order;
+			}
+			//Skips to end of tail
+			else
+			{
+				item *ptr = HashTable[i];
+				while(ptr->nextItem != NULL)
+				{
+					ptr = ptr->nextItem;
+				}
+				returnVal.word = ptr->word;
+				returnVal.order = ptr->order;
+			}
+			//Pops entry off
+			deleteTailEntry(returnVal.word);
+			return returnVal;
+		}
+	}
+
+	return returnVal;
+}
+
+bool Hashify::hashTable::searchItem(std::string s)
 {
 	int index = hashCode(s);
 	if(HashTable[index]->word == s)
 	{
-		std::cout<<"didnt add word: " << s <<std::endl;
 		return true;
 	}
 
@@ -77,15 +115,14 @@ bool hashTable::searchItem(std::string s)
 	return false;
 }
 
-//For now assume there are no duplicate entries
-void hashTable::addEntry(std::string s)
+//Adds a unique entry to the hashtable
+void Hashify::hashTable::addEntry(std::string s)
 {
 	//If string is already in hash table we dont need to readd it
 	if(searchItem(s))
 	{
 		return;
 	}
-	std::cout<<"added word: " << s << std::endl;
 	int index = hashCode(s);
 	inOrder++;
 
@@ -113,8 +150,38 @@ void hashTable::addEntry(std::string s)
 	}
 }
 
+//Deletes entry at the end of the tail or resets it to default if theres no tail left.
+void Hashify::hashTable::deleteTailEntry(std::string s)
+{
+	//If the item is not in the hashtable, do nothing
+	if(!searchItem(s))
+	{
+		return;
+	}
+
+	int index = hashCode(s);
+	item *ptr = HashTable[index];
+	//Tail entry is first entry
+	if(ptr->word == s)
+	{
+		ptr->word ="";
+		ptr->order = -1;
+		ptr->nextItem = NULL;
+		return;
+	}
+	//Tail entry is somewhere further in the list
+	while(ptr->nextItem->nextItem != NULL)
+	{
+		ptr = ptr->nextItem;
+	}
+	item *deletionTarget = ptr->nextItem;
+	ptr->nextItem = NULL;
+	delete deletionTarget;
+	return;
+}
+
 //Returns index value of string's hash using a polynomial rolling hash function. 
-int hashTable::hashCode(std::string key)
+int Hashify::hashTable::hashCode(std::string key)
 {
 	const int p = 83;
 	long long hashVal = 0;
@@ -123,7 +190,7 @@ int hashTable::hashCode(std::string key)
 	for(int i=0;i<key.length();i++)
 	{
 		hashVal = (hashVal + ((int)key[i])* power) % tableSize;
-		power = (power*p)%tableSize;
+		power = (power*p) % tableSize;
 	}
 	int index = hashVal;
 
