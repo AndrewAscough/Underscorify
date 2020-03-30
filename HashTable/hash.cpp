@@ -113,18 +113,19 @@ void hashTable::addEntry(std::string s)
 	}
 }
 
-//Im gonna make a better hashcode function later..
+//Returns index value of string's hash using a polynomial rolling hash function. 
 int hashTable::hashCode(std::string key)
 {
-	int hash =0;
-	int index = 0;
-
+	const int p = 83;
+	long long hashVal = 0;
+	long long power = 1;
+	//Using a hashfunction like this one https://cp-algorithms.com/string/string-hashing.html
 	for(int i=0;i<key.length();i++)
 	{
-		hash += (int)key[i]*31;
+		hashVal = (hashVal + ((int)key[i])* power) % tableSize;
+		power = (power*p)%tableSize;
 	}
-
-	index = hash % tableSize;
+	int index = hashVal;
 
 	return index;
 }
