@@ -1,0 +1,15 @@
+#define _ int
+#define _________ ;
+#define _______ =
+#define _____________ return
+#define _____ {
+#define _______________ }
+#define ___________ ==
+#define __________ if
+#define __ main
+#define ___ (
+#define ____ )
+#define ____________ 0
+#define ______________ 1
+#define ________ 3
+#define ______ i

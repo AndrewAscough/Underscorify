@@ -10,7 +10,7 @@ bool isSymbolWord(std::string s)
 {
 	bool symbol=false ;
 
-	for(int i=0;i<s.length();i++)
+	for(int i=0;i<s.length() ;i++)
 	{
 		if( (s[i]>=48 && s[i]<=57 ) ||
 			(s[i]>=65 && s[i] <=90) ||

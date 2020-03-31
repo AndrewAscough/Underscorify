@@ -1,5 +1,8 @@
 #include <iostream>
-int main()
+//hello world!
+int main()/*
+test
+*/
 {
 	int i=3;
 	if(i==0)

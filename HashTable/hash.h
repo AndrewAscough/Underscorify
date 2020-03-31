@@ -23,12 +23,14 @@ namespace Hashify {
 			void printDist();
 			//Pops an item off the hashtable beginning from hashtable[0]-->end tail and finishes popping each tail item until it moves on to hashtable[1]
 			item popEntry();
-
+			//Returns the order of a certain word. -1 if the word doesnt exist
+			int getOrder(std::string s);
+			//Searches if an item is in the hashtable already
+			bool searchItem(std::string s);
+			
 		private:
 			//Returns hashcode of string using polynomial rolling hash function
 			int hashCode(std::string key);
-			//Searches if an item is in the hashtable already
-			bool searchItem(std::string s);
 			//Deletes a tail item off the hashtable.
 			void deleteTailEntry(std::string s);			
 

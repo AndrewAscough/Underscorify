@@ -1,3 +1,6 @@
+#ifndef PARSER_H
+#define PARSER_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -40,3 +43,5 @@ namespace Parsify {
 	//adds "P" before the . in a normal file (if there is a dot). If there isnt it will add it to the end of the filename
 	std::string nameOutputFile(std::string s);
 };
+
+#endif //PARSER_H

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+g++ -o Underscorify HashTable/hash.cpp HashTable/hash.h Parser/Parser.cpp Parser/Parser.h main.cpp 

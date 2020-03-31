@@ -39,7 +39,6 @@ void Hashify::hashTable::printDist()
 	for(int i=0;i<tableSize;i++)
 	{
 		int c=1;
-		float percentContained;
 
 		std::cout<<"#"<<i<<" ";
 		item *ptr=HashTable[i];
@@ -48,7 +47,6 @@ void Hashify::hashTable::printDist()
 			ptr = ptr->nextItem;
 			c++;
 		}
-		percentContained = (c/inOrder) * 100;
 		std::cout << c << " which is " << (float)((float)c/(float)inOrder)*100 <<"%" << std::endl;
 	}
 }
@@ -115,6 +113,32 @@ bool Hashify::hashTable::searchItem(std::string s)
 	return false;
 }
 
+//Returns the order of a certain word. -1 if the word doesnt exist
+int Hashify::hashTable::getOrder(std::string s)
+{
+	//Item wasnt found in the hashtable
+	if(!searchItem(s))
+	{
+		return -1;
+	}
+	int index = hashCode(s);
+
+	if(HashTable[index]->word == s)
+	{
+		return HashTable[index]->order;
+	}
+
+	item *ptr = HashTable[index];
+	while(ptr->nextItem != NULL)
+	{
+		if(ptr->word == s)
+		{
+			return ptr->order;
+		}
+		ptr = ptr->nextItem;
+	}
+	return ptr->order;
+}
 //Adds a unique entry to the hashtable
 void Hashify::hashTable::addEntry(std::string s)
 {
