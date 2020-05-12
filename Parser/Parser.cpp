@@ -77,6 +77,15 @@ void Parsify::Parser::Parse()
 	}
 }
 
+//Just removes all the parsed version of the files it made and dumped around the place.
+void Parsify::Parser::cleanup()
+{
+	for(int i=0;i<files.size();i++)
+	{
+		remove(nameOutputFile(files.at(i)).c_str());
+	}
+}
+
 //Takes in a symbolword string and returns a nonsymbolword by separating the symbols with spaces. Also handles string opening and closings without modifying the string by checking isString.
 std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 {

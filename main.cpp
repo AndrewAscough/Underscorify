@@ -16,21 +16,6 @@ std::string generateUnderscoreWord(int n)
 	return word;
 }
 
-//Takes in a string s and adds a 'U' before the . or just a U to the end
-std::string nameOutputFile(std::string s)
-{
-	for(int i=0;i<s.length();i++)
-	{
-		if(s[i] == '.')
-		{
-			s.insert(i,"U");
-			return s;
-		}
-	}
-	s+="U";
-	return s;
-}
-
 //takes in a string with a file path like tests/mydirectory/testfile.cpp and returns testfile.cpp
 std::string removePath(std::string s)
 {
@@ -45,23 +30,6 @@ std::string removePath(std::string s)
 		character = s[i];
 		result.insert(0,character);
 	}
-	return result;
-}
-
-//Takes in a string s and adds a 'U' before the . or just a U to the end
-std::string nameOutputHeaderFile(std::string s)
-{
-	std::string result;
-
-	for(int i=0;i<s.length();i++)
-	{
-		if(s[i] == '.')
-		{
-			break;
-		}
-		result+=s[i];
-	}
-	result+="U.h";
 	return result;
 }
 
@@ -280,7 +248,7 @@ int main(int argc, char *argv[])
 		//Generate output file for code
 		std::ofstream outputFile;
 		std::string outFileName = "Underscorified/";
-		outFileName+=nameOutputFile(inputFileName);
+		outFileName+=inputFileName;
 
 		outputFile.open(outFileName.c_str());
 		outputFile<<underscoresIncludePath(inputFileName)<<std::endl;
@@ -391,5 +359,7 @@ int main(int argc, char *argv[])
 		outputHeaderFile << "#define " << generateUnderscoreWord(i.order) << " " << i.word << std::endl;
 	}
 
+	//Removes all the parsed files
+	p1.cleanup();
 	return 0;
 }

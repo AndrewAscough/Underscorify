@@ -1,8 +1,0 @@
-AIGHT SO:
-	UNDERSCORIFY:
-		String is being extracted from a comment (see parserU) (this is because its stored in the hashtable and really adds to the aesthetic)
-		So yknow when you #include "myclass.h", well we run that thru the code and the code doesnt update it to be: #include "myclassU.h".....
-			This is a very large big annoyance (Ooft, as the millenials would say) because a big part of my code was to ignore lines starting with #
-
-	PARSER:
-		cant handle /**/ comments
