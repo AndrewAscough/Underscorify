@@ -1,5 +1,6 @@
 int/*ayy lmao*/i=/*yeet*/0;
-
+/*s*/
+int i=0;
 /*this is a comment with    4 spaces back there*/ //and another line comment too :O :O :O
 /* this
 is

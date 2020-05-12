@@ -13,13 +13,14 @@ namespace Parsify {
 			Parser(int argc, char *argv[]);
 			//main driving function, uses the string passed in from when it was initialised and parses the file by generating a new file with a P after the name
 			void Parse();
-		private:
+		protected:
 			//Stores list of filenames to be parsed
 			std::vector<std::string> files;
-			//Determines if input is currently interacting with a string. if isString%2==0, it is not a string
-			int isString;	
 			//Determins if input is in a comment block or not. if isComment%2==0, it is not a comment
 			int isComment;
+		private:
+			//Determines if input is currently interacting with a string. if isString%2==0, it is not a string
+			int isString;	
 			//Takes in a symbolword string and returns a nonsymbolword by separating the symbols with spaces. Also handles string opening and closings without modifying the string by checking isString.
 			std::string spaceifySymbolWord(std::string symbolWord);
 			//Extracts basic comments from a string s that contain "//"

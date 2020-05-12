@@ -87,8 +87,15 @@ std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 		//Encountered part of the string is a symbol.
 		if(isSymbol(symbolWord[i]))
 		{
+			//If a \ is encountered make sure to add that and the next character to the result before moving on.
+			if(symbolWord[i] == '\\')
+			{
+				result+=symbolWord[i];
+				i++;
+				result+=symbolWord[i];
+			}
 			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%'
-			if(symbolWord[i] == 34 || symbolWord[i] == 39)
+			else if(symbolWord[i] == 34 || symbolWord[i] == 39)
 			{
 				result+=symbolWord[i];
 				isString++;

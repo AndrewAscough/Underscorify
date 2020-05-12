@@ -1,0 +1,8 @@
+AIGHT SO:
+	UNDERSCORIFY:
+		Currently Underscores.h is being made in the underscorify directory rather than the desired target
+		String is being extracted from a comment (see parserU)
+
+	PARSER:
+		cant handle /**/ comments
+		Cant handle strings containing " \" "

@@ -1,5 +1,6 @@
 #include "HashTable/hash.h"
 #include "Parser/Parser.h"
+#include <boost/filesystem.hpp>
 
 int isComment = 0;
 
@@ -90,6 +91,11 @@ std::string extractString(std::string line)
 			i++;
 			while(line[i]!=34)
 			{
+				if(line[i] == '\\')
+				{
+					contained += line[i];
+					i++;
+				}
 				contained+=line[i];
 				i++;
 			}
@@ -114,6 +120,10 @@ std::string removeString(std::string line)
 			i++;
 			while(line[i]!=34)
 			{
+				if(line[i] == '\\')
+				{
+					i++;
+				}
 				i++;
 			}
 			i++;
@@ -142,6 +152,10 @@ std::string replaceString(std::string line, int order)
 			i++;
 			while(line[i]!=34)
 			{
+				if(line[i] == '\\')
+				{
+					i++;
+				}
 				i++;
 			}
 			i++;
@@ -194,8 +208,17 @@ std::string removeComments(std::string line)
 
 int main(int argc, char *argv[])
 {
+	if(argc < 2)
+	{
+		std::cerr<<"ERROR, USE IS ./Underscorify [filenames]"<<std::endl;
+	}
+	
+	//Output folder
+	boost::filesystem::create_directory("Underscorified");
+
 	Parsify::Parser p1(argc, argv);
 	p1.Parse();
+	Hashify::hashTable h1;
 
 	//Opens each of the parsed files
 	for(int i=1;i<argc;i++)
@@ -207,16 +230,15 @@ int main(int argc, char *argv[])
 		
 		//Generate output file for code
 		std::ofstream outputFile;
-		outputFile.open(nameOutputFile(inputFileName).c_str());
-		std::string outHeaderName = nameOutputHeaderFile(inputFileName);
-		outputFile<<"#include \""<< removePath(outHeaderName) << "\""<<std::endl;
+		std::string outFileName = "Underscorified/";
+		outFileName+=removePath(nameOutputFile(inputFileName));
+
+		outputFile.open(outFileName.c_str());
+		outputFile<<"#include \"Underscores.h\""<<std::endl;
 		
 		std::string line;
 
-		//Generates the hashtable by adding each word to the hashtable. Lumps strings together and stores as one.
-		
-		Hashify::hashTable h1;
-		
+		//Generates the hashtable by adding each word to the hashtable. Lumps strings together and stores as one entry
 		while(getline(inputFile,line))
 		{
 			//First, remove all the comments from line so we can ignore adding them to the hashtable as they do not need to be changed. 
@@ -224,7 +246,6 @@ int main(int argc, char *argv[])
 			//Preprocessor directive thingy, essentially not something I want to mess with. Think #include <iostream>
 			if(line[0] == '#' && isComment%2 ==0)
 			{
-				outputFile<<line<<std::endl;
 				line="";
 			}
 			//If the line contains a string (or multiple) we extract them and put those extracted strings into the hashtable.
@@ -240,9 +261,9 @@ int main(int argc, char *argv[])
 				}
 			}
 
+			//Lastly adds remaining words to table
 			std::istringstream currentLine(line);
 			std::string word;
-
 			while(currentLine >> word)
 			{
 					h1.addEntry(word);
@@ -253,17 +274,14 @@ int main(int argc, char *argv[])
 		inputFile.clear();
 		inputFile.seekg(0,std::ios::beg);
 
-
-		//Generates output of program
+		//Generates the file with underscores as all of the variable names
 		while(getline(inputFile,line))
 		{
-			//if i now replace the strings with their underscorified version then that means the next handler in this program should try to lookup 
-			//the underscores, not find anything then just say fuck it and print out whatever is there.
-			if(containsString(line))
+			//Replaces the string (if present) in the line with the underscorified version
+			if(containsString(line) && line[0] != '#')
 			{
 				while(containsString(line))
 				{
-					//replace string takes in the line where the string was found, as well as the order for the corresponding string so it can replace it with underscores
 					line = replaceString(line,h1.getOrder(extractString(line)));
 				}
 			}
@@ -271,11 +289,23 @@ int main(int argc, char *argv[])
 			std::istringstream currentLine(line);
 			std::string word;
 
+			//To detect when the program enters a line comment and needs to NOT underscorify the words
+			bool lineComment = false;
+
 			while(currentLine >> word)
 			{
-				//generates an underscorified version of the word based off its input order to the hash table.
+				//To enter a block comment we need the start of the word = /* and to not already be in a block comment and to not already be in a line comment
+				if((word[0] == '/' && word[1] =='*') && isComment%2 == 0 && !lineComment)
+				{
+					isComment++;
+				}
+				else if(Parsify::isLineComment(word) && isComment%2 == 0)
+				{
+					lineComment = true;
+				}
+
 				//Word exists in the hashtable
-				if(h1.getOrder(word)!=-1)
+				if(h1.getOrder(word)!=-1 && !lineComment && isComment%2 == 0)
 				{
 					outputFile << generateUnderscoreWord(h1.getOrder(word)) << " ";
 				}
@@ -284,26 +314,33 @@ int main(int argc, char *argv[])
 				{
 					outputFile << word << " ";
 				}
+
+				//if the word also contains an ending character for the comment we need to increment iscomment
+				if((word[word.length()-2] == '*' && word[word.length()-1] == '/') && !lineComment)
+				{
+					isComment++;
+				}
 			}
 			outputFile<<std::endl;	
 		}
 		outputFile.close();
-		inputFile.close();
-
-		//Generates output file for #defines
-		std::ofstream outputHeaderFile;
-		outputHeaderFile.open(outHeaderName.c_str());
-
-		while(true)
-		{
-			Hashify::item i = h1.popEntry();
-			//Hashtable has no more words to pop
-			if(i.word=="")
-			{
-				break;
-			}
-			outputHeaderFile << "#define " << generateUnderscoreWord(i.order) << " " << i.word << std::endl;
-		}
+		inputFile.close();		
 	}
+
+	//Generates output file for #defines
+	std::ofstream outputHeaderFile;
+	outputHeaderFile.open("Underscorified/Underscores.h");
+
+	while(true)
+	{
+		Hashify::item i = h1.popEntry();
+		//Hashtable has no more words to pop
+		if(i.word=="")
+		{
+			break;
+		}
+		outputHeaderFile << "#define " << generateUnderscoreWord(i.order) << " " << i.word << std::endl;
+	}
+
 	return 0;
 }

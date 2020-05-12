@@ -1,0 +1,12 @@
+#define _ int
+#define _____ ;
+#define ___ =
+#define __________ {
+#define ___________ }
+#define ________ ==
+#define ____________ main
+#define ______ if
+#define _______ (
+#define _________ )
+#define ____ 0
+#define __ i
