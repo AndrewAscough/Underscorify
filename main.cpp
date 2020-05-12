@@ -9,7 +9,7 @@ std::string generateUnderscoreWord(int n)
 {
 	std::string word ="";
 
-	for(int i=0;i<n;i++)
+	for(int i=0;i<=n;i++)
 	{
 		word+="_";
 	}
@@ -206,15 +206,64 @@ std::string removeComments(std::string line)
 	return result;
 }
 
+//Returns the path to the file without the filename.
+std::string extractFilePath(std::string s)
+{
+	for(int i=s.length()-1;i>=0;i--)
+	{
+		if(s[i] == '/')
+		{
+			return s;
+		}
+		s.erase(s.begin()+i);
+	}
+	return "";
+}
+
+std::string underscoresIncludePath(std::string fileName)
+{
+	int steps =0;
+	std::string filePath ="#include \"";
+	for(int i=1;i<fileName.length();i++)
+	{
+		if(fileName[i] == '/')
+		{
+			filePath+="../";
+		}
+	}
+	filePath+="Underscores.h\"";
+	return filePath;
+}
+
+//Generates the directory structure for the output to be the same as the files input.
+void generateOutputDirectories(std::vector<std::string> fileNames)
+{
+	boost::filesystem::create_directory("Underscorified");
+	for(int i=0;i<fileNames.size();i++)
+	{
+		std::string filePath = "Underscorified/";
+		filePath += extractFilePath(fileNames.at(i));
+		boost::filesystem::create_directories(filePath);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	if(argc < 2)
 	{
 		std::cerr<<"ERROR, USE IS ./Underscorify [filenames]"<<std::endl;
+		return 1;
 	}
-	
+
+	std::vector<std::string> fileNames;
+	for(int i=1;i<argc;i++)
+	{
+		std::string s(argv[i]);
+		fileNames.push_back(s);
+	}
+
+	generateOutputDirectories(fileNames);
 	//Output folder
-	boost::filesystem::create_directory("Underscorified");
 
 	Parsify::Parser p1(argc, argv);
 	p1.Parse();
@@ -231,10 +280,10 @@ int main(int argc, char *argv[])
 		//Generate output file for code
 		std::ofstream outputFile;
 		std::string outFileName = "Underscorified/";
-		outFileName+=removePath(nameOutputFile(inputFileName));
+		outFileName+=nameOutputFile(inputFileName);
 
 		outputFile.open(outFileName.c_str());
-		outputFile<<"#include \"Underscores.h\""<<std::endl;
+		outputFile<<underscoresIncludePath(inputFileName)<<std::endl;
 		
 		std::string line;
 
