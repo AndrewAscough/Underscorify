@@ -77,6 +77,15 @@ void Parsify::Parser::Parse()
 	}
 }
 
+//Just removes all the parsed version of the files it made and dumped around the place.
+void Parsify::Parser::cleanup()
+{
+	for(int i=0;i<files.size();i++)
+	{
+		remove(nameOutputFile(files.at(i)).c_str());
+	}
+}
+
 //Takes in a symbolword string and returns a nonsymbolword by separating the symbols with spaces. Also handles string opening and closings without modifying the string by checking isString.
 std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 {
@@ -87,8 +96,15 @@ std::string Parsify::Parser::spaceifySymbolWord(std::string symbolWord)
 		//Encountered part of the string is a symbol.
 		if(isSymbol(symbolWord[i]))
 		{
+			//If a \ is encountered make sure to add that and the next character to the result before moving on.
+			if(symbolWord[i] == '\\')
+			{
+				result+=symbolWord[i];
+				i++;
+				result+=symbolWord[i];
+			}
 			//Checks to see if the symbolword is entering/exiting a string. This is to handle a string like: "hellothere&&"; or '%'
-			if(symbolWord[i] == 34 || symbolWord[i] == 39)
+			else if(symbolWord[i] == 34 || symbolWord[i] == 39)
 			{
 				result+=symbolWord[i];
 				isString++;

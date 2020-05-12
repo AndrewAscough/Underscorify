@@ -1,0 +1,6 @@
+#!/bin/bash
+
+g++ -o Underscorify HashTable/hash.cpp HashTable/hash.h Parser/Parser.cpp Parser/Parser.h main.cpp -lboost_system -lboost_filesystem
+
+#An example of feeding it a project to underscorify would be running the command below (Underscorifies the underscorify project)
+#./Underscorify HashTable/hash.cpp HashTable/hash.h Parser/Parser.cpp Parser/Parser.h main.cpp

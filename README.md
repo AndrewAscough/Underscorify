@@ -1,8 +1,10 @@
 # Underscorify
-The most annoying way to submit any c++ code.
+Have you ever thought your C++ code was **TOO** readable? Does this program ever provide the solution for you!
+Simply feed it any c++ source files and watch as it transforms your original beautiful masterpiece of work into a pile of unreadable lines.
 
-PARSER:
-	The goal of this part of the project is to take in any c++ file and separate each symbol and word from each other whilst also destroying any sembalance of formatting
-	that may have previously been there. This is so that the file will become easier to underscorify later on in the project. It will not modify comments though. As an 
-	example of what it does is it will take a line, say int main()//test comment. and change that to: int main ( ) //test comment
-	Also will not modify preprocessing directives.
+## A Nice Before and After
+
+## Running the Program
+To use the program run ./compile then run ./Underscorify [filename 1] .. [filename n]
+It will auto generate an output directory called "underscorified" and a similar directory structure to those of the files passed in (see ./compile for an example)
+If there are multiple separate files make sure to include all of their names when calling ./Underscorify so that they all get linked to the same Underscores.h file.
